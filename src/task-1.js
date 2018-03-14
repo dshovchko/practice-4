@@ -1,14 +1,20 @@
-export default function getJSON(url) {
-    // Change me!
 
-    function handleErrors(response) {
-        if (!response.ok) {
-            throw Error(response.statusText);
-        }
-        return response;
-    }
+// Change us!
 
-    return window.fetch(url)
-        .then(handleErrors)
-        .then(response => response.json());
+function status(response) {
+
+    return response;
 }
+
+function json(response) {
+
+    return response;
+}
+
+function getJSON(url) {
+
+    return window.fetch(url);
+}
+
+
+export { status, json, getJSON };
