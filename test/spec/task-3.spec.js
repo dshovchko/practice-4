@@ -1,6 +1,6 @@
 import chai from "chai";
 import sinon from "sinon";
-import getJson from "../../src/task-1.js";
+import getSequent from "../../src/task-3.js";
 
 const assert = chai.assert;
 
@@ -22,13 +22,17 @@ function getResponse(scode) {
     });
 }
 
-describe("Task 1: getJson", () => {
+describe("Task 3: getSequent", () => {
     beforeEach(() => {
         const fetchstub = sinon.stub(window, "fetch");
         
-        fetchstub.withArgs("/test/200").resolves(jsonResult({
+        fetchstub.withArgs("/test/200/1").resolves(jsonResult({
             hello: "world",
             world: "hello"
+        }));
+        fetchstub.withArgs("/test/200/2").resolves(jsonResult({
+            hello: "wollo",
+            world: "herld"
         }));
         fetchstub.withArgs("/test/404").resolves(getResponse(404));
         fetchstub.withArgs("/test/500").resolves(getResponse(500));
@@ -41,49 +45,38 @@ describe("Task 1: getJson", () => {
 
     it("should return Promise", () => {
         
-        assert.instanceOf(getJson("/test/200"), Promise);
+        assert.instanceOf(getSequent("/test/200/1", "/test/200/2"), Promise);
     });
 
-    it("should correctly parse JSON response", () => {
+    it("should correctly get", () => {
 
-        return getJson("/test/200")
+        return getSequent("/test/200/1", "/test/200/2")
             .then(data => {
-                assert.equal(data.hello, "world");
-                assert.equal(data.world, "hello");
+                assert.deepEqual(data, [{ hello: "world", world: "hello" }, { hello: "wollo", world: "herld" }]);
             });
     });
 
-    it("should correctly handle failed HTTP responses", () => {
-        return getJson("/test/404")
+    it("should failed get article", () => {
+
+        return getSequent("/test/article", "/test/200/2")
             .then(
                 () => { throw new Error("was not supposed to succeed"); },
                 m => {
                     assert.instanceOf(m, Error);
-                    assert.equal(m.message, "Not Found");
+                    assert.equal(m.message, "article fetch failed");
                 }
             );
     });
 
-    it("should correctly handle failed HTTP responses", () => {
-        return getJson("/test/500")
+    it("should failed get comments", () => {
+
+        return getSequent("/test/200/1", "/test/comments")
             .then(
                 () => { throw new Error("was not supposed to succeed"); },
                 m => {
                     assert.instanceOf(m, Error);
-                    assert.equal(m.message, "Internal Server Error");
+                    assert.equal(m.message, "comments fetch failed");
                 }
             );
     });
-
-    it("should correctly handle failed to fetch", () => {
-        return getJson("/test/car")
-            .then(
-                () => { throw new Error("was not supposed to succeed"); },
-                m => {
-                    assert.instanceOf(m, TypeError);
-                    assert.equal(m.message, "Failed to fetch");
-                }
-            );
-    });
-
 });

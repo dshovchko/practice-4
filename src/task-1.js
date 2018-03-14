@@ -1,7 +1,14 @@
 export default function getJSON(url) {
     // Change me!
-    return window.fetch(url).then(data => {
-        debugger;
-        return data.json();
-    });
+
+    function handleErrors(response) {
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        return response;
+    }
+
+    return window.fetch(url)
+        .then(handleErrors)
+        .then(response => response.json());
 }
