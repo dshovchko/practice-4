@@ -1,6 +1,6 @@
 import chai from "chai";
 import sinon from "sinon";
-import getSequent from "../../src/task-3.js";
+import getSeries from "../../src/task-3.js";
 
 const assert = chai.assert;
 
@@ -22,7 +22,7 @@ function getResponse(scode) {
     });
 }
 
-describe("Task 3: getSequent", () => {
+describe("Task 3: getSeries", () => {
     beforeEach(() => {
         const fetchstub = sinon.stub(window, "fetch");
         
@@ -45,12 +45,12 @@ describe("Task 3: getSequent", () => {
 
     it("should return Promise", () => {
         
-        assert.instanceOf(getSequent("/test/200/1", "/test/200/2"), Promise);
+        assert.instanceOf(getSeries("/test/200/1", "/test/200/2"), Promise);
     });
 
     it("should correctly get", () => {
 
-        return getSequent("/test/200/1", "/test/200/2")
+        return getSeries("/test/200/1", "/test/200/2")
             .then(data => {
                 assert.deepEqual(data, [{ hello: "world", world: "hello" }, { hello: "wollo", world: "herld" }]);
             });
@@ -58,7 +58,7 @@ describe("Task 3: getSequent", () => {
 
     it("should failed get article", () => {
 
-        return getSequent("/test/article", "/test/200/2")
+        return getSeries("/test/article", "/test/200/2")
             .then(
                 () => { throw new Error("was not supposed to succeed"); },
                 m => {
@@ -70,7 +70,7 @@ describe("Task 3: getSequent", () => {
 
     it("should failed get comments", () => {
 
-        return getSequent("/test/200/1", "/test/comments")
+        return getSeries("/test/200/1", "/test/comments")
             .then(
                 () => { throw new Error("was not supposed to succeed"); },
                 m => {
