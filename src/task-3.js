@@ -1,17 +1,13 @@
-import getJSON from "./task-1.js";
+import { getJSON } from "./task-1.js";
+
 
 export default function getSeries(url1, url2) {
     // Change me!
 
     return getJSON(url1)
-        .then(json1 => {
-            const ret = [json1];
-            return getJSON(url2)
-                .then(json2 => {
-                    ret.push(json2);
-                    return ret;
-                },
-                () => Promise.reject(new Error("comments fetch failed")));
-        },
-        () => Promise.reject(new Error("article fetch failed")));
+        .catch(() => Promise.reject(new Error("first fetch failed")))
+        .then(json1 => getJSON(url2)
+                .then(json2 => [json1, json2])
+                .catch(() => Promise.reject(new Error("second fetch failed")))
+        );
 }

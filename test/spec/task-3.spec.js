@@ -1,39 +1,20 @@
 import chai from "chai";
 import sinon from "sinon";
+import { getResponse, jsonResult } from "./utils.js";
 import getSeries from "../../src/task-3.js";
 
 const assert = chai.assert;
 
-function jsonResult(obj) {
-    return new window.Response(JSON.stringify(obj), {
-        status: 200,
-        headers: {
-            "Content-type": "application/json"
-        }
-    });
-}
-
-function getResponse(scode) {
-    return new window.Response("", {
-        status: scode,
-        headers: {
-            "Content-type": "text/plain"
-        }
-    });
-}
+const json1 = { hello: "world", world: "hello" };
+const json2 = { hello: "wollo", world: "herld" };
 
 describe("Task 3: getSeries", () => {
     beforeEach(() => {
         const fetchstub = sinon.stub(window, "fetch");
-        
-        fetchstub.withArgs("/test/200/1").resolves(jsonResult({
-            hello: "world",
-            world: "hello"
-        }));
-        fetchstub.withArgs("/test/200/2").resolves(jsonResult({
-            hello: "wollo",
-            world: "herld"
-        }));
+
+        fetchstub.withArgs("/test/200/1").resolves(jsonResult(json1));
+        fetchstub.withArgs("/test/200/2").resolves(jsonResult(json2));
+        fetchstub.withArgs("/test/200/22").resolves(jsonResult(json2));
         fetchstub.withArgs("/test/404").resolves(getResponse(404));
         fetchstub.withArgs("/test/500").resolves(getResponse(500));
         fetchstub.rejects(new TypeError("Failed to fetch"));
@@ -50,33 +31,52 @@ describe("Task 3: getSeries", () => {
 
     it("should correctly get", () => {
 
-        return getSeries("/test/200/1", "/test/200/2")
+        return getSeries("/test/200/1", "/test/200/22")
             .then(data => {
-                assert.deepEqual(data, [{ hello: "world", world: "hello" }, { hello: "wollo", world: "herld" }]);
+                assert.deepEqual(data, [json1, json2] );
             });
     });
 
-    it("should failed get article", () => {
+    it("should throw Error('first fetch failed') if first failed", () => {
 
-        return getSeries("/test/article", "/test/200/2")
+        return getSeries("/test/failed", "/test/200/2")
             .then(
-                () => { throw new Error("was not supposed to succeed"); },
+                () => { throw new Error("was not supposed to succeed"); }
+            )
+            .catch(
                 m => {
                     assert.instanceOf(m, Error);
-                    assert.equal(m.message, "article fetch failed");
+                    assert.equal(m.message, "first fetch failed");
                 }
             );
     });
 
-    it("should failed get comments", () => {
+    it("should throw Error('second fetch failed') if second failed", () => {
 
-        return getSeries("/test/200/1", "/test/comments")
+        return getSeries("/test/200/1", "/test/failed")
             .then(
-                () => { throw new Error("was not supposed to succeed"); },
+                () => { throw new Error("was not supposed to succeed"); }
+            )
+            .catch(
                 m => {
                     assert.instanceOf(m, Error);
-                    assert.equal(m.message, "comments fetch failed");
+                    assert.equal(m.message, "second fetch failed");
                 }
             );
     });
+
+    it("should throw Error('first fetch failed') if both failed", () => {
+
+        return getSeries("/test/failed", "/test/failed")
+            .then(
+                () => { throw new Error("was not supposed to succeed"); }
+            )
+            .catch(
+                m => {
+                    assert.instanceOf(m, Error);
+                    assert.equal(m.message, "first fetch failed");
+                }
+            );
+    });
+    
 });
