@@ -32,7 +32,7 @@ describe("Task 2: getParallel", () => {
 
         return getParallel(["/test/200/1", "/test/200/2"])
             .then(data => {
-                assert.deepEqual(data, [json1, json2] );
+                assert.deepEqual(data, [json1, json2]);
             });
     });
 

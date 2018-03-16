@@ -33,7 +33,7 @@ describe("Task 3: getSeries", () => {
 
         return getSeries("/test/200/1", "/test/200/22")
             .then(data => {
-                assert.deepEqual(data, [json1, json2] );
+                assert.deepEqual(data, [json1, json2]);
             });
     });
 

@@ -113,7 +113,8 @@ describe("Task 1: getJSON", () => {
                 m => {
                     assert.instanceOf(m, TypeError);
                     assert.equal(m.message, "Failed to fetch");
-            });
+                }
+            );
     });
 
 });

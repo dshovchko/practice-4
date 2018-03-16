@@ -1,6 +1,6 @@
 import statusCodes from "node-status-codes";
 
-function getResponse(scode, body=null, contentType="text/plain") {
+function getResponse(scode, body = null, contentType = "text/plain") {
     return new window.Response(body, {
         status: scode,
         statusText: statusCodes[scode],
