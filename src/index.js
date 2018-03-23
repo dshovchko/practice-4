@@ -1,1 +1,1 @@
-export default 42;
+import "./task-4/bootstrap";
