@@ -8,7 +8,7 @@
   "main": "build/bundle.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/skoloney/practice-4"
+    "baseUrl": "https://github.com/skoloney/practice-4"
   },
   "bugs": "https://github.com/skoloney/practice-4/issues",
   "homepage": "https://github.com/skoloney/practice-4",
@@ -20,14 +20,14 @@
   ],
   "scripts": {
     "lint": "eslint src test",
-    "start": "run-p build:dev sync:dev",
+    "start": "run-p build:dev sync:dev api",
+    "api": "node ./server/server",
     "test": "mocha",
     "test:all": "mocha ./test/**/*.spec.js",
     "test:browser": "run-p build:test sync:test",
     "build:dev": "rollup -c rollup.config.build.js --watch",
     "build:test": "rollup -c rollup.config.test.js --watch",
     "build:test-once": "rollup -c rollup.config.test.js",
-    "test:headless": "mocha-headless-chrome -f ./test/index.html",
     "sync:test": "browser-sync start --files build/test-bundle.js --server . --index ./test/index.html",
     "sync:dev": "browser-sync start --files build/bundle.js --server . --index ./index.html",
     "postinstall": "rollup-watch-fix"
@@ -58,6 +58,10 @@
     "source-map-support": "^0.5.0"
   },
   "dependencies": {
+    "body-parser": "^1.18.2",
+    "connect-timeout": "^1.9.0",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
     "lodash": "^4.17.4",
     "node-fetch": "^2.1.1",
     "node-status-codes": "^2.0.1",
