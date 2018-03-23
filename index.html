@@ -2,13 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Rollup-mocha boilerplate</title>
+    <title>Practice 4</title>
 
-    <script src="node_modules/source-map-support/browser-source-map-support.js"></script>
-    <script>sourceMapSupport.install();</script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
     <script defer src="build/bundle.js"></script>
 </head>
 <body>
+    <div class="container">
+        <h2>Практическая работа 4</h2>
+    </div>
 
+    <div class="container">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#task4" role="tab">Show Dialog</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#task5" role="tab">Shopping Cart</a>
+            </li>
+        </ul>
+    
+        <div class="tab-content">
+            <div class="tab-pane active" id="task4" role="tabpanel">
+                <div class="form" style="padding:1em;">
+                    <button type="button" class="btn btn-outline-primary" id="task4-show-dialog-button" data-toggle="modal">
+                        Try it
+                    </button>
+                </div>
+
+                <div id="task4-dialog"></div>
+            
+            </div>
+            <div class="tab-pane" id="task5" role="tabpanel"></div>
+        </div>
+    </div>
 </body>
 </html>
