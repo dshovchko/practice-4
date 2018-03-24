@@ -2,7 +2,6 @@
 // Change us!
 
 function status(response) {
-
     if (!response.ok) {
         throw Error(response.statusText);
     }
@@ -14,7 +13,6 @@ function json(response) {
 }
 
 function getJSON(url) {
-
     return window.fetch(url)
         .then(status)
         .then(json);

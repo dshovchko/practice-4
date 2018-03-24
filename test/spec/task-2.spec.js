@@ -24,50 +24,45 @@ describe("Task 2: getParallel", () => {
     });
 
     it("should return Promise", () => {
-        
         assert.instanceOf(getParallel(["/test/200/1"]), Promise);
     });
 
-    it("should resolve", () => getParallel(["/test/200/1", "/test/200/2"])
-        .then(data => {
-            assert.deepEqual(data, [json1, json2]);
-        })
+    it("should resolve for resolved fetches", () =>
+        getParallel(["/test/200/1", "/test/200/2"])
+            .then(data => assert.deepEqual(data, [json1, json2]))
     );
 
-    it("should reject [200, 404]", () => getParallel(["/test/200/1", "/test/404"])
-        .then(
-            () => { throw new Error("was not supposed to succeed"); }
-        )
-        .catch(
-            m => {
-                assert.instanceOf(m, Error);
-                assert.equal(m.message, "denied");
-            }
-        )
+    it("should reject [200, 404]", () =>
+        getParallel(["/test/200/1", "/test/404"])
+            .then(
+                () => { throw new Error("was not supposed to succeed"); },
+                e => {
+                    assert.instanceOf(e, Error);
+                    assert.equal(e.message, "Not Found");
+                }
+            )
     );
 
-    it("should reject [500, 200]", () => getParallel(["/test/500", "/test/200/2"])
-        .then(
-            () => { throw new Error("was not supposed to succeed"); }
-        )
-        .catch(
-            m => {
-                assert.instanceOf(m, Error);
-                assert.equal(m.message, "denied");
-            }
-        )
+    it("should reject [500, 200]", () =>
+        getParallel(["/test/500", "/test/200/2"])
+            .then(
+                () => { throw new Error("was not supposed to succeed"); },
+                e => {
+                    assert.instanceOf(e, Error);
+                    assert.equal(e.message, "Internal Server Error");
+                }
+            )
     );
 
-    it("should reject [fail, 404]", () => getParallel(["/test/dog", "/test/404"])
-        .then(
-            () => { throw new Error("was not supposed to succeed"); }
-        )
-        .catch(
-            m => {
-                assert.instanceOf(m, Error);
-                assert.equal(m.message, "denied");
-            }
-        )
+    it("should reject [fail, 404]", () =>
+        getParallel(["/test/dog", "/test/404"])
+            .then(
+                () => { throw new Error("was not supposed to succeed"); },
+                e => {
+                    assert.instanceOf(e, Error);
+                    assert.equal(e.message, "Failed to fetch");
+                }
+            )
     );
 
 });

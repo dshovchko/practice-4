@@ -8,18 +8,8 @@ const assert = chai.assert;
 const json1 = { hello: "world", world: "hello" };
 
 describe("Task 1: status", () => {
-    it("should return window.Response", () => {
-        
-        assert.instanceOf(status(getResponse(200)), window.Response);
-    });
 
-    it("should return Response", () => {
-        
-        assert.instanceOf(status(getResponse(200)), window.Response);
-    });
-
-    it("should correctly pass HTTP responses (200-299)", () => {
-
+    it("should pass through HTTP responses with 200-299 code", () => {
         let r = getResponse(200);
         assert.equal(status(r), r);
 
@@ -30,8 +20,7 @@ describe("Task 1: status", () => {
         assert.equal(status(r), r);
     });
 
-    it("should throw error on another HTTP responses", () => {
-
+    it("should throw error with HTTP response text for non-20* HTTP responses", () => {
         assert.throws(() => status(getResponse(307)), Error, "Temporary Redirect");
         assert.throws(() => status(getResponse(404)), Error, "Not Found");
         assert.throws(() => status(getResponse(503)), Error, "Service Unavailable");
@@ -63,51 +52,37 @@ describe("Task 1: getJSON", () => {
     });
 
     it("should return Promise", () => {
-        
         assert.instanceOf(getJSON("/test/200"), Promise);
     });
 
-    it("should correctly parse JSON response", () => getJSON("/test/200")
-        .then(data => {
-            assert.equal(data.hello, "world");
-            assert.equal(data.world, "hello");
-        })
+    it("should correctly parse JSON response",
+        () => getJSON("/test/200")
+            .then(data => {
+                assert.equal(data.hello, "world");
+                assert.equal(data.world, "hello");
+            })
     );
 
-    it("should correctly handle failed HTTP responses", () => getJSON("/test/404")
-        .then(
-            () => { throw new Error("was not supposed to succeed"); }
-        )
-        .catch(
-            m => {
-                assert.instanceOf(m, Error);
-                assert.equal(m.message, "Not Found");
-            }
-        )
+    it("should correctly handle failed HTTP responses",
+        () => getJSON("/test/404")
+            .then(
+                () => { throw new Error("was not supposed to succeed"); },
+                e => {
+                    assert.instanceOf(e, Error);
+                    assert.equal(e.message, "Not Found");
+                }
+            )
     );
 
-    it("should correctly handle failed HTTP responses", () => getJSON("/test/500")
-        .then(
-            () => { throw new Error("was not supposed to succeed"); }
-        )
-        .catch(
-            m => {
-                assert.instanceOf(m, Error);
-                assert.equal(m.message, "Internal Server Error");
-            }
-        )
-    );
-
-    it("should correctly handle failed to fetch", () => getJSON("/test/car")
-        .then(
-            () => { throw new Error("was not supposed to succeed"); }
-        )
-        .catch(
-            m => {
-                assert.instanceOf(m, TypeError);
-                assert.equal(m.message, "Failed to fetch");
-            }
-        )
+    it("should correctly handle rejected fetch call",
+        () => getJSON("/test/car")
+            .then(
+                () => { throw new Error("was not supposed to succeed"); },
+                e => {
+                    assert.instanceOf(e, TypeError);
+                    assert.equal(e.message, "Failed to fetch");
+                }
+            )
     );
 
 });

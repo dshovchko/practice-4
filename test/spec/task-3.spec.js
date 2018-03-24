@@ -25,50 +25,45 @@ describe("Task 3: getSeries", () => {
     });
 
     it("should return Promise", () => {
-        
         assert.instanceOf(getSeries("/test/200/1", "/test/200/2"), Promise);
     });
 
-    it("should correctly get", () => getSeries("/test/200/1", "/test/200/22")
-        .then(data => {
-            assert.deepEqual(data, [json1, json2]);
-        })
+    it("should correctly get", () =>
+        getSeries("/test/200/1", "/test/200/22")
+            .then(data => assert.deepEqual(data, [json1, json2]))
     );
 
-    it("should throw Error('first fetch failed') if first failed", () => getSeries("/test/failed", "/test/200/2")
-        .then(
-            () => { throw new Error("was not supposed to succeed"); }
-        )
-        .catch(
-            m => {
-                assert.instanceOf(m, Error);
-                assert.equal(m.message, "first fetch failed");
-            }
-        )
+    it("should throw Error('first fetch failed') if first failed", () =>
+        getSeries("/test/failed", "/test/200/2")
+            .then(
+                () => { throw new Error("was not supposed to succeed"); },
+                e => {
+                    assert.instanceOf(e, Error);
+                    assert.equal(e.message, "First fetch failed");
+                }
+            )
     );
 
-    it("should throw Error('second fetch failed') if second failed", () => getSeries("/test/200/1", "/test/failed")
-        .then(
-            () => { throw new Error("was not supposed to succeed"); }
-        )
-        .catch(
-            m => {
-                assert.instanceOf(m, Error);
-                assert.equal(m.message, "second fetch failed");
-            }
-        )
+    it("should throw Error('second fetch failed') if second failed", () =>
+        getSeries("/test/200/1", "/test/failed")
+            .then(
+                () => { throw new Error("was not supposed to succeed"); },
+                e => {
+                    assert.instanceOf(e, Error);
+                    assert.equal(e.message, "Second fetch failed");
+                }
+            )
     );
 
-    it("should throw Error('first fetch failed') if both failed", () => getSeries("/test/failed", "/test/failed")
-        .then(
-            () => { throw new Error("was not supposed to succeed"); }
-        )
-        .catch(
-            m => {
-                assert.instanceOf(m, Error);
-                assert.equal(m.message, "first fetch failed");
-            }
-        )
+    it("should throw Error('first fetch failed') if both failed", () =>
+        getSeries("/test/failed", "/test/failed")
+            .then(
+                () => { throw new Error("was not supposed to succeed"); },
+                e => {
+                    assert.instanceOf(e, Error);
+                    assert.equal(e.message, "First fetch failed")
+                }
+            )
     );
     
 });

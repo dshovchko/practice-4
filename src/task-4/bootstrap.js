@@ -28,19 +28,15 @@ function alertNo(message) {
 
 button.addEventListener("click", e => {
 
-    showDialog(dialogId).then(() => {
-
-        alertYes("It is incredible! You agree with everything :-)");
-    })
-    .catch(() => {
-
-        alertNo("Congratulation! You can not be fooled");
-    })
-    .finally(() => {
-
-        $(`#${dialogId}`).modal('hide');
-        setTimeout(() => {
-            alertHide();
-        }, 5000);
-    });
+    showDialog(dialogId)
+        .then(() => {
+            alertYes("It is incredible! You agree with everything :-)");
+            $(`#${dialogId}`).modal("hide");
+            setTimeout(alertHide, 2000);
+        })
+        .catch(() => {
+            alertNo("Congratulation! You can not be fooled");
+            $(`#${dialogId}`).modal("hide");
+            setTimeout(alertHide, 2000);
+        });
 });
