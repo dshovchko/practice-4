@@ -1,0 +1,94 @@
+{
+  "root": true,
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "module": true
+    }
+  },
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "jquery": true
+  },
+  "rules": {
+    "no-new-object": 1,
+    "quote-props": [
+      2,
+      "as-needed",
+      {
+        "keywords": true,
+        "unnecessary": false
+      }
+    ],
+    "no-array-constructor": 1,
+    "quotes": [
+      1,
+      "single",
+      "avoid-escape"
+    ],
+    "no-shadow-restricted-names": 1,
+    "one-var": 0,
+    "vars-on-top": 0,
+    "eqeqeq": 1,
+    "no-use-before-define": 0,
+    "no-unused-vars": [
+      1,
+      {
+        "vars": "all",
+        "args": "after-used"
+      }
+    ],
+    "curly": 0,
+    "no-mixed-spaces-and-tabs": 1,
+    "space-before-blocks": [
+      1,
+      "always"
+    ],
+    "no-multi-spaces": [
+      2,
+      {
+        "exceptions": {
+          "ImportDeclaration": true,
+          "Property": true
+        }
+      }
+    ],
+    "space-infix-ops": 1,
+    "keyword-spacing": [
+      1,
+      {
+        "before": true,
+        "after": true,
+        "overrides": {}
+      }
+    ],
+    "no-trailing-spaces": 1,
+    "comma-style": [
+      1,
+      "last"
+    ],
+    "comma-dangle": [
+      1,
+      "never"
+    ],
+    "semi": [
+      1,
+      "always"
+    ],
+    "camelcase": 1,
+    "new-cap": "off",
+    "func-names": 0,
+    "no-debugger": 1,
+    "no-alert": 2
+  },
+  "globals": {
+    "__webpack_public_path__": true,
+    "adobe": true,
+    "Cookies": true,
+    "YT": true,
+    "ESL": true
+  }
+}

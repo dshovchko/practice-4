@@ -1,69 +1,42 @@
-import chai from "chai";
-import sinon from "sinon";
-import { getResponse, jsonResult } from "./utils.js";
-import getSeries from "../../src/task-3.js";
+import { fetchMock } from '../fetch.mock.js';
+import { json1, json2 } from '../data.js';
+import getSeries from '../../src/task-3.js';
 
-const assert = chai.assert;
+describe('Task 3: getSeries', () => {
+  beforeEach(() => {
+    global.fetch = jest.fn(fetchMock);
+  });
 
-const json1 = { hello: "world", world: "hello" };
-const json2 = { hello: "wollo", world: "herld" };
+  it('should return Promise', () => {
+    return expect(getSeries('/test/200/1', '/test/200/2')).toBeInstanceOf(Promise);
+  });
 
-describe("Task 3: getSeries", () => {
-    beforeEach(() => {
-        const fetchstub = sinon.stub(window, "fetch");
+  it('should correctly get', () => {
+    return expect(getSeries('/test/200/1', '/test/200/22')).resolves.toEqual([json1, json2]);
+  });
 
-        fetchstub.withArgs("/test/200/1").resolves(jsonResult(json1));
-        fetchstub.withArgs("/test/200/2").resolves(jsonResult(json2));
-        fetchstub.withArgs("/test/200/22").resolves(jsonResult(json2));
-        fetchstub.withArgs("/test/404").resolves(getResponse(404));
-        fetchstub.withArgs("/test/500").resolves(getResponse(500));
-        fetchstub.rejects(new TypeError("Failed to fetch"));
-    });
+  it("should throw Error('first fetch failed') if first failed", () => {
+    const v = getSeries('/test/failed', '/test/200/2');
+    return Promise.all([
+      expect(v).rejects.toThrowError(Error),
+      expect(v).rejects.toThrowError('First fetch failed')
+    ]);
+  });
 
-    afterEach(() => {
-        window.fetch.restore();
-    });
+  it("should throw Error('second fetch failed') if second failed", () => {
+    const v = getSeries('/test/200/1', '/test/failed');
+    return Promise.all([
+      expect(v).rejects.toThrowError(Error),
+      expect(v).rejects.toThrowError('Second fetch failed')
+    ]);
+  });
 
-    it("should return Promise", () => {
-        assert.instanceOf(getSeries("/test/200/1", "/test/200/2"), Promise);
-    });
+  it("should throw Error('first fetch failed') if both failed", () => {
+    const v = getSeries('/test/failed', '/test/failed');
+    return Promise.all([
+      expect(v).rejects.toThrowError(Error),
+      expect(v).rejects.toThrowError('First fetch failed')
+    ]);
+  });
 
-    it("should correctly get", () =>
-        getSeries("/test/200/1", "/test/200/22")
-            .then(data => assert.deepEqual(data, [json1, json2]))
-    );
-
-    it("should throw Error('first fetch failed') if first failed", () =>
-        getSeries("/test/failed", "/test/200/2")
-            .then(
-                () => { throw new Error("was not supposed to succeed"); },
-                e => {
-                    assert.instanceOf(e, Error);
-                    assert.equal(e.message, "First fetch failed");
-                }
-            )
-    );
-
-    it("should throw Error('second fetch failed') if second failed", () =>
-        getSeries("/test/200/1", "/test/failed")
-            .then(
-                () => { throw new Error("was not supposed to succeed"); },
-                e => {
-                    assert.instanceOf(e, Error);
-                    assert.equal(e.message, "Second fetch failed");
-                }
-            )
-    );
-
-    it("should throw Error('first fetch failed') if both failed", () =>
-        getSeries("/test/failed", "/test/failed")
-            .then(
-                () => { throw new Error("was not supposed to succeed"); },
-                e => {
-                    assert.instanceOf(e, Error);
-                    assert.equal(e.message, "First fetch failed")
-                }
-            )
-    );
-    
 });

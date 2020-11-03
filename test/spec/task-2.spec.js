@@ -1,68 +1,42 @@
-import chai from "chai";
-import sinon from "sinon";
-import { getResponse, jsonResult } from "./utils.js";
-import getParallel from "../../src/task-2.js";
+import { fetchMock } from '../fetch.mock.js';
+import { json1, json2 } from '../data.js';
+import getParallel from '../../src/task-2.js';
 
-const assert = chai.assert;
+describe('Task 2: getParallel', () => {
+  beforeEach(() => {
+    global.fetch = jest.fn(fetchMock);
+  });
 
-const json1 = { hello: "world", world: "hello" };
-const json2 = { hello: "wollo", world: "herld" };
+  it('should return Promise', () => {
+    return expect(getParallel(['/test/200/1'])).toBeInstanceOf(Promise);
+  });
 
-describe("Task 2: getParallel", () => {
-    beforeEach(() => {
-        const fetchstub = sinon.stub(window, "fetch");
-        
-        fetchstub.withArgs("/test/200/1").resolves(jsonResult(json1));
-        fetchstub.withArgs("/test/200/2").resolves(jsonResult(json2));
-        fetchstub.withArgs("/test/404").resolves(getResponse(404));
-        fetchstub.withArgs("/test/500").resolves(getResponse(500));
-        fetchstub.rejects(new TypeError("Failed to fetch"));
-    });
+  it('should resolve for resolved fetches', () => {
+    return expect(getParallel(['/test/200/1', '/test/200/2'])).resolves.toEqual([json1, json2]);
+  });
 
-    afterEach(() => {
-        window.fetch.restore();
-    });
+  it('should reject [200, 404]', () => {
+    const v = getParallel(['/test/200/1', '/test/404']);
+    return Promise.all([
+      expect(v).rejects.toThrowError(Error),
+      expect(v).rejects.toThrowError('Not Found')
+    ]);
+  });
 
-    it("should return Promise", () => {
-        assert.instanceOf(getParallel(["/test/200/1"]), Promise);
-    });
+  it('should reject [500, 200]', () => {
+    const v = getParallel(['/test/500', '/test/200/2']);
+    return Promise.all([
+      expect(v).rejects.toThrowError(Error),
+      expect(v).rejects.toThrowError('Internal Server Error')
+    ]);
+  });
 
-    it("should resolve for resolved fetches", () =>
-        getParallel(["/test/200/1", "/test/200/2"])
-            .then(data => assert.deepEqual(data, [json1, json2]))
-    );
-
-    it("should reject [200, 404]", () =>
-        getParallel(["/test/200/1", "/test/404"])
-            .then(
-                () => { throw new Error("was not supposed to succeed"); },
-                e => {
-                    assert.instanceOf(e, Error);
-                    assert.equal(e.message, "Not Found");
-                }
-            )
-    );
-
-    it("should reject [500, 200]", () =>
-        getParallel(["/test/500", "/test/200/2"])
-            .then(
-                () => { throw new Error("was not supposed to succeed"); },
-                e => {
-                    assert.instanceOf(e, Error);
-                    assert.equal(e.message, "Internal Server Error");
-                }
-            )
-    );
-
-    it("should reject [fail, 404]", () =>
-        getParallel(["/test/dog", "/test/404"])
-            .then(
-                () => { throw new Error("was not supposed to succeed"); },
-                e => {
-                    assert.instanceOf(e, Error);
-                    assert.equal(e.message, "Failed to fetch");
-                }
-            )
-    );
+  it('should reject [fail, 404]', () => {
+    const v = getParallel(['/test/dog', '/test/404']);
+    return Promise.all([
+      expect(v).rejects.toThrowError(Error),
+      expect(v).rejects.toThrowError('Failed to fetch')
+    ]);
+  });
 
 });

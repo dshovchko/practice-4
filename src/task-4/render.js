@@ -11,8 +11,8 @@ export default function renderDialog(el, dialogId) {
                         Do you agree?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">No</button>
-                        <button type="button" class="btn btn-outline-success">Yes</button>
+                        <button type="button" class="btn btn-outline-danger no" data-dismiss="modal">No</button>
+                        <button type="button" class="btn btn-outline-success yes">Yes</button>
                     </div>
                 </div>
             </div>
