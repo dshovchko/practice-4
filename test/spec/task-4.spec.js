@@ -9,6 +9,7 @@ global.window = dom.window;
 global.document = dom.window.document;
 
 describe('Task 4: showDialog()', () => {
+  let dialogEl;
 
   beforeEach(() => {
     global.$ = jest.fn(() => {
@@ -18,21 +19,22 @@ describe('Task 4: showDialog()', () => {
     });
 
     renderDialog(document.body, ID);
+    dialogEl = document.querySelector(`#${ID}`);
   });
 
   it('should return Promise', () => {
-    return expect(showDialog(ID)).toBeInstanceOf(Promise);
+    return expect(showDialog(dialogEl)).toBeInstanceOf(Promise);
   });
 
   it('should resolves by clicking Yes', () => {
-    const d = showDialog(ID);
+    const d = showDialog(dialogEl);
     const buttonYes = document.querySelector('#test .btn-outline-success');
     buttonYes.click();
     return expect(d).resolves.toBe('Yes');
   });
 
   it('should resolves by clicking No', () => {
-    const d = showDialog(ID);
+    const d = showDialog(dialogEl);
     const buttonNo = document.querySelector('#test .btn-outline-danger');
     buttonNo.click();
     return expect(d).rejects.toBe('No');
